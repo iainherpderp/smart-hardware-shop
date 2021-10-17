@@ -1,7 +1,10 @@
 package io.recruitment.assessment.api.product;
 
+import io.recruitment.assessment.api.cart.Cart;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Collection;
 
 @Entity
 public class Product {
@@ -16,6 +19,9 @@ public class Product {
 
     @Column(precision = 11, scale = 2)
     private BigDecimal price;
+
+    @ManyToMany(mappedBy = "products")
+    private Collection<Cart> carts;
 
     public Long getId() {
         return id;

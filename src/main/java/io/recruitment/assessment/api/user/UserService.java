@@ -44,8 +44,6 @@ public class UserService implements UserDetailsService {
         return createUser(user, Role.ROLE_ADMIN);
     }
 
-
-
     @Transactional
     User save(User user) {
         return userRepository.save(user);

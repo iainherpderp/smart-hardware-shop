@@ -1,5 +1,6 @@
 package io.recruitment.assessment.api.user;
 
+import io.recruitment.assessment.api.cart.Cart;
 import io.recruitment.assessment.api.user.role.UserRole;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,6 +25,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String firstName;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.ALL)
     private Collection<UserRole> authorities;
