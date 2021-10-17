@@ -35,30 +35,16 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    Long registerCustomer(User user) throws EmailExistsException {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new EmailExistsException("The provided email address already exists " + user.getEmail());
-        }
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-
-        userRoleService.createUserRole(savedUser.getId(), Role.ROLE_CUSTOMER);
-
-        return savedUser.getId();
+    User registerCustomer(User user) throws EmailExistsException {
+        return createUser(user, Role.ROLE_CUSTOMER);
     }
 
     @Transactional
-    Long registerAdmin(User user) throws EmailExistsException {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new EmailExistsException("The provided email address already exists " + user.getEmail());
-        }
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-
-        userRoleService.createUserRole(savedUser.getId(), Role.ROLE_ADMIN);
-
-        return savedUser.getId();
+    User registerAdmin(User user) throws EmailExistsException {
+        return createUser(user, Role.ROLE_ADMIN);
     }
+
+
 
     @Transactional
     User save(User user) {
@@ -68,6 +54,19 @@ public class UserService implements UserDetailsService {
     @Transactional
     void delete(long id) {
         userRepository.deleteById(id);
+    }
+
+    @Transactional
+    private User createUser(User user, Role role) throws EmailExistsException {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new EmailExistsException("The provided email address already exists " + user.getEmail());
+        }
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        User savedUser = userRepository.save(user);
+
+        userRoleService.createUserRole(savedUser.getId(), role);
+
+        return savedUser;
     }
 
 }

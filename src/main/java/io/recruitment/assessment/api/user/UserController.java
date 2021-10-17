@@ -22,26 +22,26 @@ public class UserController {
 
     @PostMapping(value = "/register")
     public ResponseEntity<User> registerNewCustomer(@RequestBody User user) throws EmailExistsException {
-        Long id = service.registerCustomer(user);
+        User createdUser = service.registerCustomer(user);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(id)
+                .buildAndExpand(createdUser.getId())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(service.save(user));
+        return ResponseEntity.created(uri).body(createdUser);
     }
 
     @PostMapping(value = "/admin/register")
     public ResponseEntity<User> registerNewAdmin(@RequestBody User user) throws EmailExistsException {
-        Long id = service.registerAdmin(user);
+        User createdUser = service.registerAdmin(user);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(id)
+                .buildAndExpand(createdUser.getId())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(service.save(user));
+        return ResponseEntity.created(uri).body(createdUser);
     }
 
     @PutMapping(value = "/{id}")
