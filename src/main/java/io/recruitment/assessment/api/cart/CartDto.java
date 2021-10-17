@@ -1,27 +1,17 @@
 package io.recruitment.assessment.api.cart;
 
 import io.recruitment.assessment.api.product.Product;
-import io.recruitment.assessment.api.user.User;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Entity
-public class Cart {
+public class CartDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToMany
-    @JoinColumn(name = "product_ids")
     private Collection<Product> products = new ArrayList<>();
-
-    @OneToOne(optional = false)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Long userId;
+    private BigDecimal totalPrice;
 
     public Long getId() {
         return id;
@@ -39,18 +29,19 @@ public class Cart {
         this.products = products;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    @Transient
     public BigDecimal getTotalPrice() {
-        return products.stream()
-                .map(Product::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

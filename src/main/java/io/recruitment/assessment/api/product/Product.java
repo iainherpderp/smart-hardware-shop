@@ -1,6 +1,7 @@
 package io.recruitment.assessment.api.product;
 
 import io.recruitment.assessment.api.cart.Cart;
+import io.recruitment.assessment.api.order.Order;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -22,6 +23,9 @@ public class Product {
 
     @ManyToMany(mappedBy = "products")
     private Collection<Cart> carts;
+
+    @ManyToMany(mappedBy = "products")
+    private Collection<Order> orders;
 
     public Long getId() {
         return id;

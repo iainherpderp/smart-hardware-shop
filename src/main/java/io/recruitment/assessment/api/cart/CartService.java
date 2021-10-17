@@ -1,5 +1,8 @@
 package io.recruitment.assessment.api.cart;
 
+import io.recruitment.assessment.api.cart.exception.EmptyCartException;
+import io.recruitment.assessment.api.order.OrderDto;
+import io.recruitment.assessment.api.order.OrderService;
 import io.recruitment.assessment.api.product.ProductRepository;
 import io.recruitment.assessment.api.user.User;
 import io.recruitment.assessment.api.user.UserRepository;
@@ -18,10 +21,13 @@ public class CartService {
     private ProductRepository productRepository;
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private OrderService orderService;
 
     @Transactional
-    Cart retrieveCartByUser(User user) {
-        return cartRepository.findByUserNotNull(user);
+    CartDto retrieveCartByUser(User user) {
+        Cart cart = cartRepository.findByUserNotNull(user);
+        return toCartDto(cart);
     }
 
     @Transactional
@@ -66,6 +72,35 @@ public class CartService {
         }
         cart.getProducts().clear();
         cartRepository.save(cart);
+    }
+
+    @Transactional
+    OrderDto checkout(User user) {
+        OrderDto order = placeOrder(user);
+        emptyCart(user);
+        return order;
+    }
+
+    @Transactional
+    OrderDto placeOrder(User user) {
+        Optional<Cart> optional = cartRepository.findByUser(user);
+        if (optional.isEmpty()) {
+            throw new EmptyCartException("User's cart is empty");
+        }
+        Cart cart = optional.get();
+        if (cart.getProducts().isEmpty()) {
+            throw new EmptyCartException("User's cart is empty");
+        }
+        return orderService.placeOrder(cart);
+    }
+
+    CartDto toCartDto(Cart cart) {
+        CartDto dto = new CartDto();
+        dto.setId(cart.getId());
+        dto.setUserId(cart.getUser().getId());
+        dto.setProducts(cart.getProducts());
+        dto.setTotalPrice(cart.getTotalPrice());
+        return dto;
     }
 
 }

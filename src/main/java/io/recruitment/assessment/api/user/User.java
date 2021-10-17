@@ -1,10 +1,12 @@
 package io.recruitment.assessment.api.user;
 
 import io.recruitment.assessment.api.cart.Cart;
+import io.recruitment.assessment.api.order.Order;
 import io.recruitment.assessment.api.user.role.UserRole;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
@@ -28,6 +30,9 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Collection<Order> orders = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.ALL)
     private Collection<UserRole> authorities;

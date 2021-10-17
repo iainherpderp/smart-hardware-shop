@@ -1,5 +1,6 @@
 package io.recruitment.assessment.api.cart;
 
+import io.recruitment.assessment.api.order.OrderDto;
 import io.recruitment.assessment.api.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ public class CartController {
     private CartService service;
 
     @GetMapping
-    public ResponseEntity<Cart> getCart(@AuthenticationPrincipal User user) {
+    public ResponseEntity<CartDto> getCart(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(service.retrieveCartByUser(user));
     }
 
@@ -34,6 +35,11 @@ public class CartController {
     public ResponseEntity<Void> removeFromCart(@AuthenticationPrincipal User user, @PathVariable long productId) {
         service.removeFromCart(user, productId);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity<OrderDto> checkout(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(service.checkout(user));
     }
 
 

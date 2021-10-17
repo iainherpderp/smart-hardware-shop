@@ -1,15 +1,17 @@
-package io.recruitment.assessment.api.cart;
+package io.recruitment.assessment.api.order;
 
 import io.recruitment.assessment.api.product.Product;
 import io.recruitment.assessment.api.user.User;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-public class Cart {
+@Table(name = "orders")
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +21,13 @@ public class Cart {
     @JoinColumn(name = "product_ids")
     private Collection<Product> products = new ArrayList<>();
 
-    @OneToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    private Timestamp orderDate;
+
+    private boolean isCompleted = false;
 
     public Long getId() {
         return id;
@@ -47,10 +53,28 @@ public class Cart {
         this.user = user;
     }
 
+    public Timestamp getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Timestamp orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
+
     @Transient
     public BigDecimal getTotalPrice() {
         return products.stream()
                 .map(Product::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+
 }
