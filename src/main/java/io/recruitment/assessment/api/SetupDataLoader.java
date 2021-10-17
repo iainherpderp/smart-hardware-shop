@@ -1,5 +1,7 @@
 package io.recruitment.assessment.api;
 
+import io.recruitment.assessment.api.product.Product;
+import io.recruitment.assessment.api.product.ProductRepository;
 import io.recruitment.assessment.api.user.role.Role;
 import io.recruitment.assessment.api.user.User;
 import io.recruitment.assessment.api.user.UserRepository;
@@ -8,11 +10,15 @@ import io.recruitment.assessment.api.user.role.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -25,6 +31,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @Autowired
     private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -41,6 +50,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
         createUserRole(Role.ROLE_ADMIN, admin);
         createUserRole(Role.ROLE_CUSTOMER, customer);
+
+        createProducts();
 
         isInitialised = true;
     }
@@ -84,6 +95,22 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
             userRoleRepository.save(userRole);
         }
+    }
+
+    @Transactional
+    void createProducts() {
+        if (!productRepository.findAll().isEmpty()) {
+            return;
+        }
+        List<Product> products = new ArrayList<>();
+        for (int i = 1; i <= 5000; i++) {
+            Product product = new Product();
+            product.setName("Product " + i);
+            product.setDescription("Product " + i);
+            product.setPrice(BigDecimal.valueOf(i));
+            products.add(product);
+        }
+        productRepository.saveAll(products);
     }
 
 }
