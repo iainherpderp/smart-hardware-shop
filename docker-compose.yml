@@ -12,3 +12,15 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: 'true'
     ports:
     - '3306:3306'
+#  assessment-application-server:
+#    container_name: assessment-application-server
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    depends_on:
+#      - assessment-mysql-db
+#    environment:
+#      spring.datasource.url: 'jdbc:mysql://host.docker.internal:3306/assessment'
+#    ports:
+#      - '8080:8080'
+#    restart: on-failure

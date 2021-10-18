@@ -13,3 +13,15 @@ docker-compose up -d
 ```
 
 Good luck!
+
+# Running Instructions
+
+- Clone the repository to your local machine. 
+- Start the database by running `docker-compose up -d`
+- Once the database has started, run `mvn install spring-boot:run`
+- The application should be available at localhost:8080
+
+
+# ToDo
+- Add unit tests
+- Add openapi documentation
